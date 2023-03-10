@@ -1,25 +1,63 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useState } from "react";
 
-function App() {
+export default function App() {
+  const modelRef = React.useRef();
+  const [annots, setAnnots] = useState([]);
+
+  const handleClick = (event) => {
+    const { clientX, clientY } = event;
+
+    if (modelRef.current) {
+      let hit = modelRef.current.positionAndNormalFromPoint(clientX, clientY);
+      if (hit) {
+        setAnnots((annots) => {
+          return [...annots, hit];
+        });
+      }
+    }
+  };
+
+  const getDataPosition = (annot) => {
+    return `${annot.position.x} ${annot.position.y} ${annot.position.z}`;
+  };
+
+  const getDataNormal = (annot) => {
+    return `${annot.normal.x} ${annot.normal.y} ${annot.normal.z}`;
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    // <model-viewer
+    //   // className="model-viewer"
+    //   src="./Bone_test.glb"
+    //   alt="A rock"
+    //   exposure="0.008"
+    //   camera-controls
+    //   ar
+    //   ar-modes="webxr"
+    //   onClick={handleClick}
+    //   ref={(ref) => {
+    //     modelRef.current = ref;
+    //   }}
+    // >
+    //   {annots.map((annot, idx) => (
+    //     <button
+    //       key={`hotspot-${idx}`}
+    //       className="view-button"
+    //       slot={`hotspot-${idx}`}
+    //       data-position={getDataPosition(annot)}
+    //       data-normal={getDataNormal(annot)}
+    //     ></button>
+    //   ))}
+    // </model-viewer>
+
+    <model-viewer 
+    className="model-viewer"
+    src="./Bone_test.glb"
+                ar
+                auto-rotate camera-controls
+                camera-orbit="-20deg 75deg 2m"
+                alt="A 3D model of an astronaut">
+  </model-viewer>
   );
 }
-
-export default App;
